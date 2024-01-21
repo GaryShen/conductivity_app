@@ -1,4 +1,6 @@
 class GridEvaluation < ApplicationRecord
+  validate :grid_format_valid, :grid_must_be_square
+
   before_save :set_result
 
   def self.random_grid(n)
@@ -6,36 +8,71 @@ class GridEvaluation < ApplicationRecord
   end
 
   def bfs_path
-    path = []
     grid_array = self.grid.split("\n").map { |row| row.split('').map(&:to_i) }
-    visited = Array.new(grid_array.length) { Array.new(grid_array[0].length, false) }
     queue = []
+    predecessor = {}
+    path_found = false
+    end_node = nil
 
     grid_array[0].each_with_index do |val, col|
       if val == 1
         queue.push([0, col])
-        visited[0][col] = true
+        predecessor[[0, col]] = nil
       end
     end
 
-    until queue.empty?
+    while !queue.empty? && !path_found
       row, col = queue.shift
-      path << [row, col]
 
-      return path if row == grid_array.length - 1
+      if row == grid_array.length - 1
+        path_found = true
+        end_node = [row, col]
+        break
+      end
 
       [[row + 1, col], [row, col + 1], [row - 1, col], [row, col - 1]].each do |new_row, new_col|
-        if new_row.between?(0, grid_array.length - 1) && new_col.between?(0, grid_array[0].length - 1) && grid_array[new_row][new_col] == 1 && !visited[new_row][new_col]
+        if new_row.between?(0, grid_array.length - 1) &&
+           new_col.between?(0, grid_array[0].length - 1) &&
+           grid_array[new_row][new_col] == 1 &&
+           !predecessor.has_key?([new_row, new_col])
+
           queue.push([new_row, new_col])
-          visited[new_row][new_col] = true
+          predecessor[[new_row, new_col]] = [row, col]
         end
       end
     end
 
-    []
+    return [] unless path_found
+
+    path = []
+    current_node = end_node
+    while current_node
+      path.unshift(current_node)
+      current_node = predecessor[current_node]
+    end
+
+    path
   end
 
   def set_result
     self.result = bfs_path.present?
+  end
+
+  private
+
+  def grid_format_valid
+    unless grid.match(/\A[01\r\n]+\z/)
+      errors.add(:grid, 'must only contain 0, 1, and newlines')
+    end
+  end
+
+  def grid_must_be_square
+    rows = grid.split("\n")
+    return errors.add(:grid, 'cannot be empty') if rows.empty?
+
+    length = rows.first.length
+    unless rows.all? { |row| row.length == length }
+      errors.add(:grid, 'must be a square (N x N grid)')
+    end
   end
 end

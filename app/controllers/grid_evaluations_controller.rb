@@ -8,13 +8,13 @@ class GridEvaluationsController < ApplicationController
   end
 
   def create
-    if params[:grid_evaluation] && params[:grid_evaluation][:grid_file]
-      grid_data = read_grid_from_file(params[:grid_evaluation][:grid_file])
-    else
-      grid_data = params[:grid_evaluation][:grid]
-    end
+    grid_data = if params[:grid_evaluation] && params[:grid_evaluation][:grid_file]
+                  read_grid_from_file(params[:grid_evaluation][:grid_file])
+                else
+                  params[:grid_evaluation][:grid]
+                end
 
-    @grid_evaluation = GridEvaluation.new(grid: grid_data)
+    @grid_evaluation = GridEvaluation.new(grid: grid_data.gsub(/\r\n?/, "\n"))
 
     if @grid_evaluation.save
       redirect_to @grid_evaluation

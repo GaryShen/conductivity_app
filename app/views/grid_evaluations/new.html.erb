@@ -1,4 +1,15 @@
-<%= form_with model: @grid_evaluation, url: grid_evaluations_path, method: :post, local: true do |form| %>
+<% if @grid_evaluation.errors.any? %>
+  <div>
+    <h2><%= pluralize(@grid_evaluation.errors.count, "error") %> prohibited this grid_evaluation from being saved:</h2>
+    <ul>
+    <% @grid_evaluation.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @grid_evaluation, url: grid_evaluations_path, method: :post, local: true, data: { turbo: false } do |form| %>
   <div class="form-group">
     <%= form.label :grid_file, "Upload Grid File" %>
     <%= form.file_field :grid_file, class: 'form-control' %>
@@ -16,6 +27,10 @@
 <% end %>
 
 <script>
+function isValidGridInput(input) {
+  return /^[01\n]*$/.test(input);
+}
+
 document.getElementById('generate_grid_button').addEventListener('click', function () {
   let gridSize = document.getElementById('n').value;
   fetch(`<%= generate_random_grid_grid_evaluations_path %>?n=${gridSize}`)
@@ -23,5 +38,12 @@ document.getElementById('generate_grid_button').addEventListener('click', functi
     .then(data => {
       document.getElementById('grid_evaluation_grid').value = data.grid;
     });
+});
+
+document.getElementById('grid_evaluation_grid').addEventListener('input', function(e) {
+  if (!isValidGridInput(e.target.value)) {
+    alert('Invalid input! Only 0, 1, and newline characters are allowed.');
+    e.target.value = e.target.value.replace(/[^01\n]/g, '');
+  }
 });
 </script>
