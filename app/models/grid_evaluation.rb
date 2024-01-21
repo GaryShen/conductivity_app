@@ -1,4 +1,6 @@
 class GridEvaluation < ApplicationRecord
+  serialize :result_path, coder: JSON
+
   validate :grid_format_valid, :grid_must_be_square
 
   before_save :set_result
@@ -55,15 +57,18 @@ class GridEvaluation < ApplicationRecord
   end
 
   def set_result
-    self.result = bfs_path.present?
+    path = bfs_path
+
+    self.result = path.present?
+    self.result_path = path
   end
 
   private
 
   def grid_format_valid
-    unless grid.match(/\A[01\r\n]+\z/)
-      errors.add(:grid, 'must only contain 0, 1, and newlines')
-    end
+    return if grid.match(/\A[01\r\n]+\z/)
+
+    errors.add(:grid, 'must only contain 0, 1, and newlines')
   end
 
   def grid_must_be_square
@@ -71,8 +76,8 @@ class GridEvaluation < ApplicationRecord
     return errors.add(:grid, 'cannot be empty') if rows.empty?
 
     length = rows.first.length
-    unless rows.all? { |row| row.length == length }
-      errors.add(:grid, 'must be a square (N x N grid)')
-    end
+    return if rows.all? { |row| row.length == length }
+
+    errors.add(:grid, 'must be a square (N x N grid)')
   end
 end

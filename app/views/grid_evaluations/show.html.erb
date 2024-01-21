@@ -3,7 +3,7 @@
   <% @grid_evaluation.grid.split("\n").each_with_index do |row, row_index| %>
     <tr>
       <% row.split('').each_with_index do |cell, col_index| %>
-        <% if @grid_evaluation.bfs_path.include?([row_index, col_index]) %>
+        <% if @grid_evaluation.result_path.include?([row_index, col_index]) %>
           <td class="conductive"><%= cell %></td>
         <% else %>
           <td><%= cell %></td>
