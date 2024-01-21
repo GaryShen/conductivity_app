@@ -68,3 +68,6 @@ end
 
 gem 'bootstrap', '~> 5.3.2'
 gem 'sassc-rails'
+gem 'will_paginate', '~> 4.0'
+gem 'will_paginate-bootstrap-style'
+

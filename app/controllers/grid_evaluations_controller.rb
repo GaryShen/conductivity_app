@@ -1,6 +1,8 @@
 class GridEvaluationsController < ApplicationController
   def index
     @grid_evaluations = GridEvaluation.all
+
+    @grid_evaluations = @grid_evaluations.paginate(page: params[:page], per_page: 10)
   end
 
   def new
