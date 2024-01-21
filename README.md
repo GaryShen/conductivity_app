@@ -33,3 +33,8 @@ Upload grid data in plain text format, like so:
 1101
 ```
 Each line represents a grid row. '0's are non-conductive, '1's are conductive.
+
+### Upcoming Enhancements
+- using background job handle big file or big size column
+- add more different algorithms ex: DFS..
+- ...
