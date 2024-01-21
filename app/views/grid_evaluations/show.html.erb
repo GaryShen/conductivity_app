@@ -1,8 +1,13 @@
+<h4>Path Diagram(BFS search)</h4>
 <table>
-  <% @grid_evaluation.grid.split("\n").each do |row| %>
+  <% @grid_evaluation.grid.split("\n").each_with_index do |row, row_index| %>
     <tr>
-      <% row.split('').each do |cell| %>
-        <td class="<%= 'conductive' if cell == '1' %>"><%= cell %></td>
+      <% row.split('').each_with_index do |cell, col_index| %>
+        <% if @grid_evaluation.bfs_path.include?([row_index, col_index]) %>
+          <td class="conductive"><%= cell %></td>
+        <% else %>
+          <td><%= cell %></td>
+        <% end %>
       <% end %>
     </tr>
   <% end %>

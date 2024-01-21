@@ -16,14 +16,12 @@
 <% end %>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    document.getElementById('generate_grid_button').addEventListener('click', function () {
-      let gridSize = document.getElementById('n').value;
-      fetch(`<%= generate_random_grid_grid_evaluations_path %>?n=${gridSize}`)
-        .then(response => response.json())
-        .then(data => {
-          document.getElementById('grid_evaluation_grid').value = data.grid;
-        });
+document.getElementById('generate_grid_button').addEventListener('click', function () {
+  let gridSize = document.getElementById('n').value;
+  fetch(`<%= generate_random_grid_grid_evaluations_path %>?n=${gridSize}`)
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById('grid_evaluation_grid').value = data.grid;
     });
-  });
+});
 </script>
