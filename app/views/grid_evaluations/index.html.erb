@@ -1,0 +1,20 @@
+<h2>History</h2>
+<%= link_to 'Create New Evaluation', new_grid_evaluation_path, class: 'btn btn-primary' %>
+
+<table class="table table-hover">
+  <tr>
+    <th>ID</th>
+    <th>Grid</th>
+    <th>Result</th>
+    <th>View</th>
+  </tr>
+
+  <% @grid_evaluations.each do |evaluation| %>
+    <tr>
+      <td><%= evaluation.id %></td>
+      <td><%= evaluation.grid.truncate(50) %></td>
+      <td><%= evaluation.result ? 'TRUE' : 'FALSE' %></td>
+      <td><%= link_to 'View', grid_evaluation_path(evaluation) %></td>
+    </tr>
+  <% end %>
+</table>

@@ -1,0 +1,13 @@
+<table>
+  <% @grid_evaluation.grid.split("\n").each do |row| %>
+    <tr>
+      <% row.split('').each do |cell| %>
+        <td class="<%= 'conductive' if cell == '1' %>"><%= cell %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
+
+Result: <%= @grid_evaluation.result ? 'TRUE' : 'FALSE' %>
+<br>
+<%= link_to 'Back to list', grid_evaluations_path, class: 'btn btn-primary' %>

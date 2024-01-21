@@ -1,0 +1,29 @@
+<%= form_with model: @grid_evaluation, url: grid_evaluations_path, method: :post, local: true do |form| %>
+  <div class="form-group">
+    <%= form.label :grid_file, "Upload Grid File" %>
+    <%= form.file_field :grid_file, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :grid, "Enter Grid Data Manually" %>
+    <br>
+    <%= button_tag "Generate Random Grid", type: 'button', id: 'generate_grid_button', class: 'btn btn-secondary' %>
+    <%= label_tag :n, "Grid Size:" %>
+    <%= number_field_tag :n, 5, min: 1 %>
+    <%= form.text_area :grid, rows: 5, class: 'form-control' %>
+  </div>
+  <%= form.submit "Submit", class: 'btn btn-primary' %>
+<% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('generate_grid_button').addEventListener('click', function () {
+      let gridSize = document.getElementById('n').value;
+      fetch(`<%= generate_random_grid_grid_evaluations_path %>?n=${gridSize}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('grid_evaluation_grid').value = data.grid;
+        });
+    });
+  });
+</script>
